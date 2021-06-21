@@ -48,6 +48,10 @@ public interface GoodsService {
     List<GoodsDto> queryAll(GoodsQueryCriteria criteria);
 
     /**
+     * 消费者查询
+     */
+    List<GoodsDto> queryAllByConsumer(GoodsQueryCriteria criteria);
+    /**
      * 根据ID查询
      * @param goodsId ID
      * @return GoodsDto

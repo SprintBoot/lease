@@ -106,18 +106,17 @@ App({
     //     AUTH.bindSeller()
     //   }
     // })
-    const userInfo = wx.getStorageInfoSync('userInfo')
-    const userBase = wx.getStorageInfoSync('userBase')
+    const userInfo = wx.getStorageSync('userInfo')
+    const userBase = wx.getStorageSync('userBase')
     console.log(userInfo,userBase)
     if(!(userInfo&&userBase)){
-      Auth.login().then(res=>{
-        userInfo = wx.getStorageInfoSync('userInfo')
-        userBase = wx.getStorageInfoSync('userBase')
-        this.setData({
-          userInfo : userInfo,
-          userBase:userBase
-        })
-      }) 
+      AUTH.login()
+      userInfo = wx.getStorageSync('userInfo')
+      userBase = wx.getStorageSync('userBase')
+      this.setData({
+        userInfo : userInfo,
+        userBase: userBase
+      })
     }
 
   },

@@ -65,6 +65,14 @@ public class GoodsController {
         return new ResponseEntity<>(goodsService.queryAll(criteria,pageable),HttpStatus.OK);
     }
 
+    @GetMapping("/getlist")
+    @Log("查询api/system/goods")
+    @ApiOperation("查询所有商品")
+    public ResponseEntity<Object> queryAllByConsumer(){
+        GoodsQueryCriteria criteria = new GoodsQueryCriteria();
+        return new ResponseEntity<>(goodsService.queryAllByConsumer(criteria),HttpStatus.OK);
+    }
+
     @PostMapping
     @Log("新增api/system/goods")
     @ApiOperation("新增api/system/goods")

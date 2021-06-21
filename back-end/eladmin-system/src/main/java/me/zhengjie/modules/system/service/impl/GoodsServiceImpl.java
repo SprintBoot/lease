@@ -76,6 +76,11 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     @Override
+    public List<GoodsDto> queryAllByConsumer(GoodsQueryCriteria criteria){
+        return goodsMapper.toDto(goodsRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder)));
+    }
+
+    @Override
     @Transactional
     public GoodsDto findById(Integer goodsId) {
         Goods goods = goodsRepository.findById(goodsId).orElseGet(Goods::new);

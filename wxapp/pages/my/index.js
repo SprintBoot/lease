@@ -4,10 +4,10 @@ const TOOLS = require('../../utils/tools.js')
 
 Page({
 	data: {
-    balance:0.00,
-    freeze:0,
-    score:0,
-    growth:0,
+    // balance:0.00,
+    // freeze:0,
+    // score:0,
+    // growth:0,
     score_sign_continuous:0,
 
     // 用户订单统计数据
@@ -44,22 +44,24 @@ Page({
     //     // })
     //   }
     // })
-    const userInfo = wx.getStorageInfoSync('userInfo')
-    const userBase = wx.getStorageInfoSync('userBase')
-    console.log(userInfo,userBase)
+    const userInfo = wx.getStorageSync('userInfo')
+    const userBase = wx.getStorageSync('userBase')
     if(!(userInfo&&userBase)){
-      Auth.login().then(res=>{
-        userInfo = wx.getStorageInfoSync('userInfo')
-        userBase = wx.getStorageInfoSync('userBase')
-        this.setData({
-          userInfo : userInfo,
-          userBase:userBase
-        })
-      }) 
+      AUTH.login()
+      userInfo = wx.getStorageSync('userInfo')
+      userBase = wx.getStorageSync('userBase')
+      this.setData({
+        userInfo : userInfo,
+        userBase: userBase
+      })
     }
-    
+    console.log(userInfo)
     if(userInfo){
-      this.setData({userInfoStatus:2})  
+      this.setData({
+        userInfoStatus:2,
+        userBase:userBase,
+        userInfo:userInfo
+      })  
     }
     // AUTH.wxaCode().then(code => {
     //   this.data.code = code
@@ -76,7 +78,7 @@ Page({
     })
   },
   async getUserApiInfo() {
-    const res = await WXAPI.userDetail(wx.getStorageSync('token'))
+    // const res = await WXAPI.userDetail(wx.getStorageSync('token'))
     if (res.code == 0) {
       let _data = {}
       _data.apiUserInfoMap = res.data

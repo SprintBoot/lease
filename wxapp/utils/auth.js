@@ -79,7 +79,7 @@ async function login(page){
               //获取用户信息
             wx.getUserInfo({
               success: function (infoRes) {
-                wx.setStorageSync('userBase', infoRes.rawData)
+                wx.setStorageSync('userBase', JSON.parse(infoRes.rawData))
                 console.log('===开始request请求');
                 //请求服务端的登录接口
                 wx.request({

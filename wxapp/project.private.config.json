@@ -61,13 +61,7 @@
           "query": "goodsid=6761",
           "scene": null
         },
-        {
-          "id": -1,
-          "name": "分销中心",
-          "pathName": "pages/fx/apply-status",
-          "query": "",
-          "scene": null
-        },
+        
         {
           "id": -1,
           "name": "notice",
