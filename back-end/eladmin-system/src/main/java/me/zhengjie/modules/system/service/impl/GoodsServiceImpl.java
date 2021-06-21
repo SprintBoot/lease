@@ -16,20 +16,22 @@
 package me.zhengjie.modules.system.service.impl;
 
 import me.zhengjie.modules.system.domain.Goods;
-import me.zhengjie.utils.ValidationUtil;
-import me.zhengjie.utils.FileUtil;
+import me.zhengjie.modules.system.domain.User;
+import me.zhengjie.modules.system.repository.UserRepository;
+import me.zhengjie.modules.system.service.dto.UserDto;
+import me.zhengjie.utils.*;
 import lombok.RequiredArgsConstructor;
 import me.zhengjie.modules.system.repository.GoodsRepository;
 import me.zhengjie.modules.system.service.GoodsService;
 import me.zhengjie.modules.system.service.dto.GoodsDto;
 import me.zhengjie.modules.system.service.dto.GoodsQueryCriteria;
 import me.zhengjie.modules.system.service.mapstruct.GoodsMapper;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import me.zhengjie.utils.PageUtil;
-import me.zhengjie.utils.QueryHelp;
+
 import java.util.List;
 import java.util.Map;
 import java.io.IOException;
@@ -50,14 +52,26 @@ public class GoodsServiceImpl implements GoodsService {
     private final GoodsRepository goodsRepository;
     private final GoodsMapper goodsMapper;
 
+    private final UserRepository userRepository;
+
     @Override
     public Map<String,Object> queryAll(GoodsQueryCriteria criteria, Pageable pageable){
+        UserDetails user =  SecurityUtils.getCurrentUser();
+        User u = userRepository.findByUsername(user.getUsername());
+        if(u.getDept().getId()==2){ // 厂商
+            criteria.setBussId(u.getId().intValue());
+        }
         Page<Goods> page = goodsRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder),pageable);
         return PageUtil.toPage(page.map(goodsMapper::toDto));
     }
 
     @Override
     public List<GoodsDto> queryAll(GoodsQueryCriteria criteria){
+        UserDetails user =  SecurityUtils.getCurrentUser();
+        User u = userRepository.findByUsername(user.getUsername());
+        if(u.getDept().getId()==2){ // 厂商
+            criteria.setBussId(u.getId().intValue());
+        }
         return goodsMapper.toDto(goodsRepository.findAll((root, criteriaQuery, criteriaBuilder) -> QueryHelp.getPredicate(root,criteria,criteriaBuilder)));
     }
 
@@ -72,12 +86,18 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public GoodsDto create(Goods resources) {
+        UserDetails user =  SecurityUtils.getCurrentUser();
+        User u = userRepository.findByUsername(user.getUsername());
+        resources.setBussId(u.getId().intValue());
+        resources.setState(0);
         return goodsMapper.toDto(goodsRepository.save(resources));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(Goods resources) {
+        UserDetails user =  SecurityUtils.getCurrentUser();
+        User u = userRepository.findByUsername(user.getUsername());
         Goods goods = goodsRepository.findById(resources.getGoodsId()).orElseGet(Goods::new);
         ValidationUtil.isNull( goods.getGoodsId(),"Goods","id",resources.getGoodsId());
         goods.copy(resources);

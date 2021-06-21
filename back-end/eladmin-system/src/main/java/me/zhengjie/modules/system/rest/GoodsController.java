@@ -17,13 +17,19 @@ package me.zhengjie.modules.system.rest;
 
 import me.zhengjie.annotation.Log;
 import me.zhengjie.modules.system.domain.Goods;
+import me.zhengjie.modules.system.domain.User;
 import me.zhengjie.modules.system.service.GoodsService;
+import me.zhengjie.modules.system.service.UserService;
 import me.zhengjie.modules.system.service.dto.GoodsQueryCriteria;
+import me.zhengjie.modules.system.service.dto.UserDto;
+import me.zhengjie.modules.system.service.mapstruct.UserMapper;
+import me.zhengjie.utils.SecurityUtils;
 import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.*;
@@ -42,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
 public class GoodsController {
 
     private final GoodsService goodsService;
-
+    private final UserService userService;
     @Log("导出数据")
     @ApiOperation("导出数据")
     @GetMapping(value = "/download")

@@ -44,7 +44,7 @@ public class Goods extends BaseEntity implements Serializable {
     private Integer goodsId;
 
     @Column(name = "buss_id",nullable = false)
-    @NotNull
+//    @NotNull
     @ApiModelProperty(value = "厂商id")
     private Integer bussId;
 
@@ -78,7 +78,7 @@ public class Goods extends BaseEntity implements Serializable {
     private Integer verifyBy;
 
     @Column(name = "state",nullable = false)
-    @NotNull
+//    @NotNull
     @ApiModelProperty(value = "状态")
     private Integer state;
 
@@ -86,21 +86,6 @@ public class Goods extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "描述")
     private String detail;
 
-    @Column(name = "create_by")
-    @ApiModelProperty(value = "创建者")
-    private String createBy;
-
-    @Column(name = "update_by")
-    @ApiModelProperty(value = "更新者")
-    private String updateBy;
-
-    @Column(name = "create_time")
-    @ApiModelProperty(value = "创建日期")
-    private Timestamp createTime;
-
-    @Column(name = "update_time")
-    @ApiModelProperty(value = "更新时间")
-    private Timestamp updateTime;
 
     public void copy(Goods source){
         BeanUtil.copyProperties(source,this, CopyOptions.create().setIgnoreNullValue(true));

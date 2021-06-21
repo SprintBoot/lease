@@ -16,48 +16,26 @@
 package me.zhengjie.modules.system.service.dto;
 
 import lombok.Data;
-import me.zhengjie.base.BaseDTO;
-
-import java.sql.Timestamp;
-import java.io.Serializable;
+import java.util.List;
+import me.zhengjie.annotation.Query;
 
 /**
 * @website https://el-admin.vip
-* @description /
 * @author lease
-* @date 2021-06-19
+* @date 2021-06-21
 **/
 @Data
-public class GoodsDto extends BaseDTO implements Serializable {
+public class ConsumerQueryCriteria{
 
-    /** 商品id */
-    private Integer goodsId;
+    /** 精确 */
+    @Query
+    private Integer consumerId;
 
-    /** 厂商id */
-    private Integer bussId;
+    /** 精确 */
+    @Query
+    private String openId;
 
-    /** 类别id */
-    private Integer cateId;
-
-    /** 商品名称 */
-    private String goodsName;
-
-    /** 日租价格 */
-    private Double leasePrice;
-
-    /** 买断价 */
-    private Double buyPrice;
-
-    /** 图片地址 */
-    private String img;
-
-    /** 审核人id */
-    private Integer verifyBy;
-
-    /** 状态 */
-    private Integer state;
-
-    /** 描述 */
-    private String detail;
-
+    /** 模糊 */
+    @Query(type = Query.Type.INNER_LIKE)
+    private String nickname;
 }

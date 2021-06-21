@@ -117,6 +117,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/file/**").permitAll()
                 // 阿里巴巴 druid
                 .antMatchers("/druid/**").permitAll()
+                .antMatchers("/api/consumer/login").permitAll()
                 // 放行OPTIONS请求
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // 自定义匿名访问所有url放行：允许匿名和带Token访问，细腻化到每个 Request 类型
@@ -133,7 +134,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 所有类型的接口都放行
                 .antMatchers(anonymousUrls.get(RequestMethodEnum.ALL.getType()).toArray(new String[0])).permitAll()
                 // 所有请求都需要认证
+//                .antMatchers("/orderInfo/**").permitAll()
                 .anyRequest().authenticated()
+
                 .and().apply(securityConfigurerAdapter());
     }
 

@@ -38,15 +38,13 @@
           class="date-item"
         />
         <rrOperation :crud="crud" />
+
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-          <el-form-item label="厂商id" prop="bussId">
-            <el-input v-model="form.bussId" style="width: 370px;" />
-          </el-form-item>
           <el-form-item label="类别id" prop="cateId">
             <el-select v-model="form.cateId" filterable placeholder="请选择">
               <el-option
@@ -67,15 +65,6 @@
           </el-form-item>
           <el-form-item label="图片地址" prop="img">
             <el-input v-model="form.img" style="width: 370px;" />
-          </el-form-item>
-          <el-form-item label="状态" prop="state">
-            <el-select v-model="form.state" filterable placeholder="请选择">
-              <el-option
-                v-for="item in dict.goods_status"
-                :key="item.id"
-                :label="item.label"
-                :value="item.value" />
-            </el-select>
           </el-form-item>
           <el-form-item label="描述">
             <el-input v-model="form.detail" :rows="3" type="textarea" style="width: 370px;" />
@@ -108,11 +97,15 @@
         <el-table-column prop="detail" label="描述" />
         <el-table-column v-if="checkPer(['admin','goods:edit','goods:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
-            <udOperation
-              :data="scope.row"
-              :permission="permission"
-            />
+<!--            <udOperation-->
+<!--              :data="scope.row"-->
+<!--              :permission="permission"-->
+<!--            />-->
+            <el-button  v-permission="permission.examine" :loading="crud.status.cu === 2" :size="mini" type="primary"  icon="el-icon-edit" @click="enableGoods(scope.row)" />
+            <el-button  v-permission="permission.put" :disabled="scope.row.state === 0" :loading="crud.status.cu === 2" :size="mini" type="primary" @click="putGoods(scope.row)" >
+              {{ scope.row.state === 2 ? '下架' : '上架' + '商品 ' }}</el-button>
           </template>
+
         </el-table-column>
       </el-table>
       <!--分页组件-->
@@ -126,13 +119,12 @@ import crudGoods from '@/api/goods'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
-import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
 const defaultForm = { goodsId: null, bussId: null, cateId: null, goodsName: null, leasePrice: null, buyPrice: null, img: null, verifyBy: null, state: null, detail: null, createBy: null, updateBy: null, createTime: null, updateTime: null }
 export default {
   name: 'Goods',
-  components: { pagination, crudOperation, rrOperation, udOperation },
+  components: { pagination, crudOperation, rrOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['category', 'goods_status'],
   cruds() {
@@ -143,7 +135,9 @@ export default {
       permission: {
         add: ['admin', 'goods:add'],
         edit: ['admin', 'goods:edit'],
-        del: ['admin', 'goods:del']
+        del: ['admin', 'goods:del'],
+        examine: ['admin', 'goods:examine'],
+        put: ['admin', 'goods:put']
       },
       rules: {
         bussId: [
@@ -180,6 +174,42 @@ export default {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
+    },
+    enableGoods(data) {
+      this.$confirm('此操作将审核通过商品 ' + data.goodsName + ', 是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        data.state = 1
+        crudGoods.edit(data).then(res => {
+          this.crud.notify(this.dict.label.state[1] + '成功', CRUD.NOTIFICATION_TYPE.SUCCESS)
+        }).catch(() => {
+          data.state = 1
+        })
+      }).catch(() => {
+        data.state = 1
+      })
+    },
+    putGoods(data) {
+      let changeDate = 3
+      if (data.state === 1 || data.state === 3) {
+        changeDate = 2
+      }
+      this.$confirm('此操作将' + changeDate === 3 ? '上架' : '下架' + '商品 ' + data.goodsName + ', 是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        data.state = changeDate
+        crudGoods.edit(data).then(res => {
+          this.crud.notify('操作成功', CRUD.NOTIFICATION_TYPE.SUCCESS)
+        }).catch(() => {
+          data.state = changeDate
+        })
+      }).catch(() => {
+        data.state = changeDate
+      })
     }
   }
 }

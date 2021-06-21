@@ -47,6 +47,12 @@ public class DeptController {
     private final DeptService deptService;
     private static final String ENTITY_NAME = "dept";
 
+    @GetMapping(value = "/test")
+    public String download() throws Exception {
+        System.out.println("12");
+        return "14214";
+    }
+
     @ApiOperation("导出部门数据")
     @GetMapping(value = "/download")
     @PreAuthorize("@el.check('dept:list')")

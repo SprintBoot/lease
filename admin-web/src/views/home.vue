@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    123
+    欢迎来到管理系统！
   </div>
 </template>
 

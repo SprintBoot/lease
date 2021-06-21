@@ -16,8 +16,6 @@
 package me.zhengjie.modules.system.service.dto;
 
 import lombok.Data;
-import me.zhengjie.base.BaseDTO;
-
 import java.sql.Timestamp;
 import java.io.Serializable;
 
@@ -25,39 +23,21 @@ import java.io.Serializable;
 * @website https://el-admin.vip
 * @description /
 * @author lease
-* @date 2021-06-19
+* @date 2021-06-21
 **/
 @Data
-public class GoodsDto extends BaseDTO implements Serializable {
+public class ConsumerDto implements Serializable {
 
-    /** 商品id */
-    private Integer goodsId;
+    /** 用户id */
+    private Integer consumerId;
 
-    /** 厂商id */
-    private Integer bussId;
+    private String openId;
 
-    /** 类别id */
-    private Integer cateId;
+    private String nickname;
 
-    /** 商品名称 */
-    private String goodsName;
+    private String phone;
 
-    /** 日租价格 */
-    private Double leasePrice;
+    private String gender;
 
-    /** 买断价 */
-    private Double buyPrice;
-
-    /** 图片地址 */
-    private String img;
-
-    /** 审核人id */
-    private Integer verifyBy;
-
-    /** 状态 */
-    private Integer state;
-
-    /** 描述 */
-    private String detail;
-
+    private Timestamp createTime;
 }
