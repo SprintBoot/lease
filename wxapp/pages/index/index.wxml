@@ -1,23 +1,81 @@
-<!--index.wxml-->
-<view class="container">
-  <view class="userinfo">
-    <block wx:if="{{canIUseOpenData}}" calss="userinfo-opendata">
-      <view class="userinfo-avatar" bindtap="bindViewTap">
-        <open-data type="userAvatarUrl"></open-data>
+<van-sticky>
+  <view class="search-contianer">
+    <view class="search" style="height:{{navHeight}}px;padding-top:{{navTop}}px">
+      <view class="search-title" src="../../images/actLogo/ytlogo.png"
+        style="height:{{navHeight-navTop-5}}px;line-height:{{navHeight-navTop-5}}px;width:{{132/52*(navHeight-navTop-5)}}px;">
+        {{mallName}}
       </view>
-      <open-data type="userNickName"></open-data>
-    </block>
-    <block wx:elif="{{!hasUserInfo}}">
-      <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-      <button wx:elif="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-      <view wx:else> 请使用1.4.4及以上版本基础库 </view>
-    </block>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-    </block>
+      <input placeholder-class="search-placeholder"
+        style="width:{{menuButtonObject.left-18-((132/52)*(navHeight-navTop-5))}}px" type="text" placeholder="输入关键词搜索"
+        disabled value="{{name}}" bindinput="bindinput" bindtap="goSearch"></input>
+    </view>
   </view>
-  <view class="usermotto">
-    <text class="user-motto">{{motto}}</text>
+</van-sticky>
+
+<wxs module="goodsDetailPage">
+  module.exports = {
+    url: function (item) {
+      if (item.supplyType == 'cps_jd') {
+        return '/packageCps/pages/goods-details/cps-jd?id=' + item.goodsId
+      } else if (item.supplyType == 'vop_jd') {
+        return '/pages/goods-details/vop?id=' + item.yyId + '&goodsId=' + item.id
+      } else if (item.supplyType == 'cps_pdd') {
+        return '/packageCps/pages/goods-details/cps-pdd?id=' + item.goodsId
+      } else if (item.supplyType == 'cps_taobao') {
+        return '/packageCps/pages/goods-details/cps-taobao?id=' + item.goodsId
+      } else {
+        return '/pages/goods-details/index?id=' + item.goodsId
+      }
+    }
+  }
+</wxs>
+<view class="swiper-container">
+  <swiper class="swiper1" indicator-dots="true" indicator-active-color="#fff" autoplay circular>
+    <swiper-item wx:for="{{banners}}" wx:key="id">
+      <image mode="aspectFill" bindtap="tapBanner" data-url="{{item.linkUrl}}" src="{{item.picUrl}}" />
+    </swiper-item>
+  </swiper>
+</view>
+<view class="category-container">
+  <view class="category-box">
+    <view class="category-list" wx:for="{{categories}}" wx:key="id">
+      <view class="category-column {{activeCategoryId == item.id ? 'type-item-on' : ''}}" bindtap="tabClick"
+        data-id="{{item.id}}">
+        <image mode="AspectFit" class="category-imgbox" src="{{item.icon}}"></image>
+        <view class="category-title">{{item.name}}</view>
+      </view>
+    </view>
   </view>
 </view>
+
+<view class="container">
+  <van-divider custom-class="table-text" contentPosition="center">
+    <image class="table-icon-goodslist" src="../../images/home/goodslist.png"></image> 商品列表
+  </van-divider>
+  <view class="goods-container">
+    <view class="goods-box" wx:for="{{goods}}" wx:key="id" bindtap="toDetailsTap" data-id="{{item.id}}"
+      data-supplytype="{{item.supplyType}}" data-yyid="{{item.yyId}}">
+      <view class="img-box">
+        <image src="{{item.pic}}" class="image" mode="aspectFill" lazy-load="true" />
+      </view>
+      <view class="goods-title van-multi-ellipsis--l2">{{item.name}}</view>
+      <view wx:if="{{item.characteristic}}" class="characteristic van-multi-ellipsis--l2"
+        style="-webkit-line-clamp: 1;">{{item.characteristic}}</view>
+      <view class="goods-price-container">
+        <view class="goods-price">¥ {{item.minPrice}} / 天</view>
+      </view>
+    </view>
+  </view>
+  <view hidden="{{loadingMoreHidden ? true : false}}" class="weui-loadmore weui-loadmore_line"
+    style='margin-top:60rpx;margin-bottom:30rpx;'>
+    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">没有更多啦</view>
+  </view>
+</view>
+
+
+<!-- <van-overlay show="{{ adPositionIndexPop }}">
+  <view class="adPositionIndexPop">
+    <image src="{{ adPositionIndexPop.val }}" mode="widthFix" bindtap="clickAdPositionIndexPop"></image>
+    <van-icon custom-class="close" name="close" size="64rpx" color="#fff" bind:click="closeAdPositionIndexPop" />
+  </view>
+</van-overlay> -->
