@@ -1,0 +1,2 @@
+<van-cell title="关于我们" is-link url="/pages/about/index" />
+<van-cell title="意见反馈" is-link url="/pages/my/feedback" />
